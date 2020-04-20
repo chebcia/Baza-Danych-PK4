@@ -10,6 +10,7 @@ public:
 private:
 
 	 void dodajUzytkownika();
+	 void dodawaniedopliku(string login, string haslo, string rola);
 	 void usunUzytkownika();
 
 
