@@ -5,6 +5,34 @@ Sprzedawca::Sprzedawca()
 	this->rola = "sprzedawca";
 }
 
+void Sprzedawca::znajdzlekarstwa()
+{
+	Magazyn magazyn = Magazyn();
+	Listalekow *znalezioneLekarstwa = magazyn.znajdzLeki();
+	if (znalezioneLekarstwa != NULL)
+	{
+		Listalekow * nowyPhead = znalezioneLekarstwa;
+		while (nowyPhead!= NULL)
+		{
+
+			Lek *znalezionylek = nowyPhead->lek;
+			cout << "Nazwa leku to: " << znalezionylek->getNazwaleku() << endl;
+			cout << "Ograniczenia znalezionego leku to: " << znalezionylek->getOgraniczenia() << "lat" << endl;
+			cout << "Cena znalezionego leku to: " << znalezionylek->getCena() << "PLN" << endl;
+			cout << "Refundacja leku: " << znalezionylek->getRefundacja()  << endl;
+			cout << "Ilosc sztuk znalezionego leku to: " << znalezionylek->getIloscsztuk() << endl;
+			cout << "Numer serii znalezionego leku to: " << znalezionylek->getNumerserii() << endl<<endl;
+			nowyPhead = nowyPhead->pNext;
+		}
+
+	}
+	else
+	{
+		cout << "Nie znaleziono lekarstw" << endl;
+	}
+
+}
+
 void Sprzedawca::znajdzlek()
 {
 	Lek lek = podajNazweIRodzaj();
@@ -14,45 +42,52 @@ void Sprzedawca::znajdzlek()
 	{
 		cout << "Ograniczenia znalezionego leku to: " << znalezionylek->getOgraniczenia() << "lat" << endl;
 		cout << "Cena znalezionego leku to: " << znalezionylek->getCena() << "PLN"  << endl;
-		cout << "Refundacja znalezionego leku to: " << znalezionylek->getRefundacja() << "PLN" << endl;
+		cout << "Refundacja leku: " << znalezionylek->getRefundacja() << endl;
 		cout << "Ilosc sztuk znalezionego leku to: " << znalezionylek->getIloscsztuk() << endl;
 		cout << "Numer serii znalezionego leku to: " << znalezionylek->getNumerserii() << endl;
 	
 	}
-	delete znalezionylek;
-	if (rola == "sprzedawca")
-		menu();
+	else
+	{
+
+	}
+
 }
 
 void Sprzedawca::menu()
 {
 
-
-	cout << "1.Sprzedaj lek" << endl;
-	cout << "2.Znajdz zamiennik" << endl;
-	cout << "3.Znajdz lek" << endl;
-	cout << "0.Wyjdz" << endl;
-
-	int opcja;
-	cin >> opcja;
-
-	switch (opcja)
+	int opcja = 1;
+	while (opcja != 0)
 	{
-	case 1:
-		sprzedajLek();
-		break;
-	case 2:
-		znajdzZamiennik();
-		break;
-	case 3:
-		znajdzlek();
-		break;
-	case 0:
-		exit(0);
-		break;
-	default:
-		cout << "Bledna opcja";
-		menu();
+		cout << "1.Sprzedaj lek" << endl;
+		cout << "2.Znajdz zamiennik" << endl;
+		cout << "3.Znajdz lek" << endl;
+		cout << "4.Znajdz lekarstwa" << endl;
+		cout << "0.Wyjdz" << endl;
+
+		cin >> opcja;
+
+		switch (opcja)
+		{
+		case 1:
+			sprzedajLek();
+			break;
+		case 2:
+			znajdzZamiennik();
+			break;
+		case 3:
+			znajdzlek();
+			break;
+		case 4:
+			znajdzlekarstwa();
+			break;
+		case 0:
+			exit(0);
+			break;
+		default:
+			cout << "Bledna opcja";
+		}
 	}
 }
 
@@ -62,8 +97,7 @@ void Sprzedawca::sprzedajLek()
 	Magazyn magazyn = Magazyn();
 
 	magazyn.zmniejszilosclekowojeden(lek.getNazwaleku(), lek.getRodzajleku());
-	if(rola=="sprzedawca")
-		menu();
+
 
 }
 
@@ -75,6 +109,4 @@ void Sprzedawca::znajdzZamiennik()
 	cout << "Podaj chorobe dla ktorej szukasz lekow " << endl;
 	cin >> choroba;
 	magazyn.znajdzzamiennik(choroba);
-	if (rola == "sprzedawca")
-		menu();
 }
