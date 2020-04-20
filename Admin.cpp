@@ -1,5 +1,8 @@
 #include "Admin.h"
 
+
+
+
 void Admin::dodajUzytkownika()
 {
 
@@ -13,18 +16,23 @@ void Admin::dodajUzytkownika()
 	cin >> haslo;
 	cout << "rola: "<<endl;
 	cin >> rola;
+	dodawaniedopliku(login, haslo, rola);
+}
 
-	int id=1;
+void Admin::dodawaniedopliku(string login, string haslo, string rola)
+{
+
+	int id = 1;
 	string linia;
 	ifstream plik1("hasla.txt");
-	
+
 	if (plik1)
 	{
 		int aktualneID;
 		while (getline(plik1, linia))
 		{
-			
-			if (atoi(linia.c_str()) >id )
+
+			if (atoi(linia.c_str()) > id)
 			{
 				id = atoi(linia.c_str());
 			}
@@ -32,20 +40,22 @@ void Admin::dodajUzytkownika()
 		plik1.close();
 	}
 	id++;
-	ofstream plik( "hasla.txt", ios::out | ios::app);
+	ofstream plik("hasla.txt", ios::out | ios::app);
 	try
 	{
-		plik <<id <<" "<< login << " " << haslo << " " << rola << '\n';
-		plik.close(); //obowi¹zkowo nale¿y zamkn¹æ plik
+		plik << id << " " << login << " " << haslo << " " << rola << '\n';
+		plik.close(); //obowiÄ…zkowo naleÅ¼y zamknÄ…Ä‡ plik
 		menu();
 	}
 	catch (exception e)
 	{
-		cout << "Blad podczas dostepu do bazy uzytkownikow"<<endl;
+		cout << "Blad podczas dostepu do bazy uzytkownikow" << endl;
 		plik.close();
 	}
 
 }
+
+
 
 void Admin::usunUzytkownika()
 {
@@ -59,7 +69,7 @@ void Admin::usunUzytkownika()
 	{
 		string linia;
 		string loginzpliku;
-		// u¿ycie vectora jako kontenera stl
+		// uÅ¼ycie vectora jako kontenera stl
 		std::vector<string> liniezpliku;
 		while (getline(plik, linia)) {
 			char * schowek;
