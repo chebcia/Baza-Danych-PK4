@@ -8,6 +8,10 @@ public:
 	Magazyn() {};
 	Lek* znajdzlek(string nazwaleku, string nazwarodzaju);
 	Listalekow* znajdzLeki();
+	
+	
+	
+	void dodajlek2(string nazwaleku, string nazwarodzaju);
 	void dodajlek();
 	void znajdzzamiennik(string choroba);
 	template <typename T> void usunlek(string nazwaleku, string nazwarodzaju)
