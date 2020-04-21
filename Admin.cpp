@@ -55,15 +55,8 @@ void Admin::dodawaniedopliku(string login, string haslo, string rola)
 
 }
 
-
-
-void Admin::usunUzytkownika()
+void Admin::usunUzytkownika2(string login)
 {
-	cout << "Podaj login uzytkownika ktory ma zostac usuniety"<<endl;
-	string login;
-	cout << "Login: "<<endl;
-	cin >> login;
-
 	fstream plik("hasla.txt", std::ios::in);
 	try
 	{
@@ -84,7 +77,7 @@ void Admin::usunUzytkownika()
 			loginzpliku = schowek;
 
 			if (login != loginzpliku) {
-				liniezpliku.push_back(linia+"\n");
+				liniezpliku.push_back(linia + "\n");
 
 			}
 			delete skonwertowany;
@@ -94,19 +87,36 @@ void Admin::usunUzytkownika()
 		if (plik.good()) {
 			// iterator stl 
 			std::vector<string>::iterator cell = liniezpliku.begin();
-			for (cell; cell!=liniezpliku.end(); cell++) {
+			for (cell; cell != liniezpliku.end(); cell++) {
 
 				plik << *cell;
 			}
 		}
 		plik.close();
-	
+
 	}
-	catch(exception e)
+	catch (exception e)
 	{
-		cout << "Blad podczas dostepu do bazy uzytkownikow"<<endl;
+		cout << "Blad podczas dostepu do bazy uzytkownikow" << endl;
 		plik.close();
 	}
+
+
+
+
+}
+
+
+
+
+void Admin::usunUzytkownika()
+{
+	cout << "Podaj login uzytkownika ktory ma zostac usuniety"<<endl;
+	string login;
+	cout << "Login: "<<endl;
+	cin >> login;
+	usunUzytkownika2(login);
+	
 
 
 }
