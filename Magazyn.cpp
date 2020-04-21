@@ -7,7 +7,7 @@ using namespace std;
 Lek* Magazyn::znajdzlek(string nazwaleku, string nazwarodzaju) //parametr metody z klasy lek
 {
 	fstream plik;
-	// sprawdzenie fragmentu instrukcj¹ try
+	// sprawdzenie fragmentu instrukcjÄ… try
 	try
 	{
 		plik.open(nazwarodzaju + ".txt", std::ios::in);
@@ -44,7 +44,7 @@ Lek* Magazyn::znajdzlek(string nazwaleku, string nazwarodzaju) //parametr metody
 
 		return nullptr;
 	}
-	// z³apanie wyj¹tku w przypadku niepowodzenia dostêpu do pliku
+	// zÅ‚apanie wyjÄ…tku w przypadku niepowodzenia dostÄ™pu do pliku
 	catch (const std::exception &e )
 	{
 		std::cout <<std::endl << e.what() << std::endl;
@@ -57,17 +57,13 @@ Listalekow * Magazyn::znajdzLeki()
 {
 	return zarzadzanieLekami.znajdzLekarstwa();
 }
+ 
 
-void Magazyn::dodajlek()
+
+
+
+void Magazyn::dodajlek2(string nazwaleku, string nazwarodzaju)
 {
-	cout << "Wpisz rodzaj \n";
-	string nazwaleku;
-	string nazwarodzaju;
-
-	cin >> nazwarodzaju;
-	cout << "Wpisz nazwe leku\n";
-	cin >> nazwaleku;
-
 	Lek *lek = znajdzlek(nazwaleku, nazwarodzaju);
 
 	if (lek != nullptr)
@@ -84,10 +80,11 @@ void Magazyn::dodajlek()
 		int ograniczenia;
 		int iloscsztuk;
 		string numerserii;
-		// sprawdznie fragmentu kodu podejrzanego o wyj¹tek 
+		// sprawdznie fragmentu kodu podejrzanego o wyjÄ…tek 
 		ofstream plik;
-		// je¿eli otwarcie pliku by siê nie powiod³o rzucany jest wyj¹tek który ³apie instrukcja catch
-		// je¿eli do jakiegoœ obiektu nie mo¿na by³o by siê odwo³aæ to rzucany jest wyj¹tek exception
+		ofstream zamienniki;
+		// jeÅ¼eli otwarcie pliku by siÄ™ nie powiodÅ‚o rzucany jest wyjÄ…tek ktÃ³ry Å‚apie instrukcja catch
+		// jeÅ¼eli do jakiegoÅ› obiektu nie moÅ¼na byÅ‚o by siÄ™ odwoÅ‚aÄ‡ to rzucany jest wyjÄ…tek exception
 
 
 		cout << "podaj cene : ";
@@ -101,6 +98,8 @@ void Magazyn::dodajlek()
 		getline(cin, refundacjaString);//enter od razu wczytuje linie po cin i powoduje ze trzeba 2 razy sczytac
 		cout << "podaj numer serii: ";
 		getline(cin, numerserii);
+		
+		
 		if (refundacjaString.compare("tak") == 0)
 		{
 			refundacja = true;
@@ -111,17 +110,17 @@ void Magazyn::dodajlek()
 				refundacja = false;
 			}
 
-		try 
+		try
 		{
 			plik.open(nazwarodzaju + ".txt", ios::out | ios::app);
 			plik << nazwaleku << " " << refundacja << " " << cena << " " << ograniczenia << " " << iloscsztuk << " " << numerserii << "\n";
-			plik.close(); //obowi¹zkowo nale¿y zamkn¹æ plik
+			plik.close(); //obowiÄ…zkowo naleÅ¼y zamknÄ…Ä‡ plik
+
 		}
 		catch (const exception &e)
 		{
 			cout << "cos poszlo nie tak przy otwieraniu pliku!" << endl;
 		}
-		ofstream zamienniki;
 		try {
 			zamienniki.open("zamienniki.txt", ios::out | ios::app);
 			string choroba;
@@ -138,13 +137,32 @@ void Magazyn::dodajlek()
 
 			zamienniki.close();
 		}
-		// z³panie wyj¹tku
+		// zÅ‚panie wyjÄ…tku
 		catch (const exception &e)
 		{
-			cout << "cos poszlo nie tak przy otwieraniu pliku!"<<" zamienniki.txt" << endl;
+			cout << "cos poszlo nie tak przy otwieraniu pliku!" << " zamienniki.txt" << endl;
 			zamienniki.close();
 		}
+
+
+
+		
+		
 	}
+
+ }
+
+
+void Magazyn::dodajlek()
+{
+	cout << "Wpisz rodzaj \n";
+	string nazwaleku;
+	string nazwarodzaju;
+	cin >> nazwarodzaju;
+	cout << "Wpisz nazwe leku\n";
+	cin >> nazwaleku;
+	dodajlek2(nazwaleku, nazwarodzaju);
+	
 }
 
 void Magazyn::znajdzzamiennik(string choroba)
@@ -186,7 +204,7 @@ void Magazyn::znajdzzamiennik(string choroba)
 void Magazyn::usunlekzzamiennikow(string nazwaleku)
 {
 	fstream plik;
-	// sprawdzenie kodu podejrzanego o wyj¹tek
+	// sprawdzenie kodu podejrzanego o wyjÄ…tek
 	try
 	{
 	plik.open("zamienniki.txt", std::ios::in);
@@ -222,7 +240,7 @@ void Magazyn::usunlekzzamiennikow(string nazwaleku)
 		}
 		plik.close();
 	}
-	// z³apanie wyj¹tku 
+	// zÅ‚apanie wyjÄ…tku 
 	catch (std::exception &e)
 	{
 		std::cout << "Dostep do pliku zostal zabroniony!" << std::endl;
@@ -357,7 +375,7 @@ void Magazyn::uzupelnijlek(string nazwaleku, string nazwarodzaju, int nowailosc)
 void Magazyn::wypiszlistedopliku(string nazwarodzaju, Listalekow* lista) //metoda ktora sobie bierze listelekow a lista lekow to obiekt co nie?
 {
 	fstream plik;
-	// sprawdŸ fragment kodu podejrzany o rzucenie wyj¹tku
+	// sprawdÅº fragment kodu podejrzany o rzucenie wyjÄ…tku
 	try
 	{
 		plik.open(nazwarodzaju + ".txt", std::ofstream::out | std::ofstream::trunc);
@@ -373,7 +391,7 @@ void Magazyn::wypiszlistedopliku(string nazwarodzaju, Listalekow* lista) //metod
 		Listalekow::wyczyscliste(lista);
 		plik.close();
 	}
-	// z³apanie wyj¹tku
+	// zÅ‚apanie wyjÄ…tku
 	catch (const exception &e)
 	{
 		cout << "Dostep do bazy zabroniony" << endl;
