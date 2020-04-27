@@ -1,9 +1,4 @@
-#include <iostream>
 #include "lek.h"
-
-
-
-
 
 Lek::Lek(string nazwaleku, string rodzajleku, bool refundacja, double cena, int ograniczenia, string numerserii, int iloscsztuk)
 {
@@ -14,7 +9,6 @@ Lek::Lek(string nazwaleku, string rodzajleku, bool refundacja, double cena, int 
 	this->iloscsztuk = iloscsztuk;
 	this->ograniczenia = ograniczenia;
 	this->refundacja = refundacja;
-
 }
 Lek::Lek(string nazwaleku, bool refundacja, double cena, int ograniczenia, string numerserii, int iloscsztuk)
 {
@@ -24,7 +18,6 @@ Lek::Lek(string nazwaleku, bool refundacja, double cena, int ograniczenia, strin
 	this->ograniczenia = ograniczenia;
 	this->numerserii = numerserii;
 	this->refundacja = refundacja;
-
 }
 
 Lek::Lek(string nazwaleku, string rodzajleku)
@@ -32,13 +25,3 @@ Lek::Lek(string nazwaleku, string rodzajleku)
 	this->nazwaleku = nazwaleku;
 	this->rodzajleku = rodzajleku;
 }
-
-Lek::~Lek()
-{
-
-}
-
-
-
-
-
