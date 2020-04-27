@@ -4,13 +4,11 @@
 #include "RODZAJ.h"
 #include <fstream>
 #include <sstream> 
-#include"Windows.h"
+#include "Windows.h"
 using namespace std;
 
 class Lek
-{  
-
-private:
+{
 	string nazwaleku;
 	string rodzajleku; 
 	string numerserii;
@@ -20,15 +18,11 @@ private:
 	int iloscsztuk;
 
 public:
-
+    Lek() {}
 	Lek(string nazwaleku,string rodzajleku, bool refundacja, double cena, int ograniczenia,string numerserii, int iloscsztuk);
 	Lek(string nazwaleku, bool refundacja, double cena, int ograniczenia, string numerserii,  int iloscsztuk);
 	Lek(string nazwaleku, string rodzajleku);
 
-    ~Lek();
-	
-	Lek() {};
-	
 	const string &getNazwaleku() const {
 		return nazwaleku;
 	}
