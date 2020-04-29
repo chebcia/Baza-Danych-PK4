@@ -1,5 +1,5 @@
-
 #include "ListaLekow.h"
+#include <QMessageBox>
 
 void Listalekow::dodajlekdolisty(Lek* lek,Listalekow*& pHead)
 {
@@ -21,8 +21,6 @@ void Listalekow::dodajlekdolisty(Lek* lek,Listalekow*& pHead)
 		pHead = new Listalekow(NULL, lek);
 		pHead->rozmiar++;
 	}
-		
-
 }
 
 
@@ -35,7 +33,6 @@ Listalekow::Listalekow(Listalekow  *listalekow, Lek* lek)
 Listalekow::Listalekow()
 {
 	this->pNext = NULL;
-	
 }
 
 Listalekow::~Listalekow()
@@ -45,14 +42,11 @@ Listalekow::~Listalekow()
 		delete pNext->lek;
 		delete pNext;
 		pNext = przechowywatorglowy;
-
 	}
-	
 }
 
 void Listalekow::usunlekponazwie(string nazwaleku, Listalekow*& pHead)
 {
-	
 	if (pHead)
 	{
 		if (pHead->lek->getNazwaleku() == nazwaleku)
@@ -62,34 +56,22 @@ void Listalekow::usunlekponazwie(string nazwaleku, Listalekow*& pHead)
 				delete przechowywatorglowy;
 				return;
 		}
-
 		Listalekow * przechowywatorglowy = pHead;
 		while (przechowywatorglowy->pNext->lek->getNazwaleku() != nazwaleku)
 		{
 			przechowywatorglowy = przechowywatorglowy->pNext;
 			if (przechowywatorglowy == nullptr)
 			{
-				cout << "lek nie znajduje sie aktualnie w liscie";
+                QMessageBox::warning(nullptr, "BazyDanych", "lek nie znajduje sie aktualnie w liscie");
 				return;
 			}
-			
-
-
         }
 		Listalekow * wsk = przechowywatorglowy->pNext->pNext;
 		delete przechowywatorglowy->pNext;
 		przechowywatorglowy->pNext = wsk;
-
-
-
 	}
-	else
-	{
-		cout << " Nie ma takiego leku ";
-	}
-
-
-
+    else
+        QMessageBox::warning(nullptr, "BazyDanych", "Nie ma takiego leku");
 }
 
 void Listalekow::wyczyscliste(Listalekow *& pHead)
@@ -104,8 +86,6 @@ void Listalekow::wyczyscliste(Listalekow *& pHead)
 	//	przechowywatorglowy = pHead->pNext;
 
 	//}
-
-
 }
 
 Lek Listalekow::znajdzLekPoNazwie(Listalekow *& pHead, string nazwaleku)
@@ -117,7 +97,6 @@ Lek Listalekow::znajdzLekPoNazwie(Listalekow *& pHead, string nazwaleku)
 				przechowywatorglowy->lek->getOgraniczenia(), przechowywatorglowy->lek->getNumerserii(), przechowywatorglowy->lek->getIloscsztuk());
 		}
 	}
-	cout << "Nie znaleziono takiego leku w liscie";
+    QMessageBox::warning(nullptr, "BazyDanych", "Nie znaleziono takiego leku w liscie");
 	return Lek();
 }
-
