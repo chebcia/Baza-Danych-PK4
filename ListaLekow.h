@@ -2,9 +2,8 @@
 #include "lek.h"
 class Listalekow
 {
-
-private: 
 	int rozmiar = 0;
+
 public:
 	Listalekow  * pNext;
 	Lek* lek;
