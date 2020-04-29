@@ -1,16 +1,13 @@
 #pragma once
-#include"Windows.h"
+#include "Windows.h"
 #include <string>
 #include <fstream>
-#include <sstream> 
-#include <iostream>
+#include <sstream>
 #include <regex>
 using namespace std;
-class Logowanie {
-
-
+class Logowanie
+{
 public:
-	Logowanie() { }
-	string menulogowania();
-	string zalogujSie(string login, string haslo);
+    static bool sprawdzDane(string login, string haslo);
+    static string zalogujSie(string login, string haslo);
 };
