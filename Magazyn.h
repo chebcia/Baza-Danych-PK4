@@ -1,23 +1,22 @@
 #pragma once
 #include "ListaLekow.h"
 #include "ZarzadzanieLekami.h"
+#include <QMessageBox>
 
-class Magazyn {
+class Magazyn
+{
 	ZarzadzanieLekami zarzadzanieLekami = ZarzadzanieLekami();
+
 public:
-	Magazyn() {};
+    Magazyn() {}
+
 	Lek* znajdzlek(string nazwaleku, string nazwarodzaju);
 	Listalekow* znajdzLeki();
-	
-	
-	
-	void dodajlek2(string nazwaleku, string nazwarodzaju);
-	void dodajlek();
+    void dodajlek(string nazwaleku, string nazwarodzaju);
 	void znajdzzamiennik(string choroba);
 	template <typename T> void usunlek(string nazwaleku, string nazwarodzaju)
 	{
 		fstream plik;
-
 		try
 		{
 			plik.open(nazwarodzaju + ".txt", std::ios::in);
@@ -37,8 +36,7 @@ public:
 				schowek = strtok(skonwertowany, " ");
 				if (linia.compare("") != 0)
 				{
-					//while (schowek != NULL) {
-					cout << schowek << endl;
+                    //while (schowek != NULL) {
 					nazwalekuzpliku = schowek;
 					if (nazwaleku != nazwalekuzpliku) {
 
@@ -63,16 +61,16 @@ public:
 					}
 				}
 
-				delete skonwertowany;
+                delete[] skonwertowany;
 			}
 			plik.close();
 			wypiszlistedopliku(nazwarodzaju, lista);
 			usunlekzzamiennikow(nazwaleku);
 		}
 		catch (std::exception &e)
-		{
-			std::cout << "Dostep do pliku zostal zabroniony!" << std::endl;
+        {
 			plik.close();
+            QMessageBox::critical(nullptr, "BazyDancyh", (string("Dostep do pliku zostal zabroniony!\n") + e.what()).c_str());
 		}
 
 	}
