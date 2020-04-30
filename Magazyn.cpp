@@ -1,8 +1,7 @@
 #include "Magazyn.h"
+#include <QInputDialog>
 
 using namespace std;
-
-
 
 Lek* Magazyn::znajdzlek(string nazwaleku, string nazwarodzaju) //parametr metody z klasy lek
 {
@@ -11,10 +10,8 @@ Lek* Magazyn::znajdzlek(string nazwaleku, string nazwarodzaju) //parametr metody
 	try
 	{
 		plik.open(nazwarodzaju + ".txt", std::ios::in);
-		if (!plik.good())
-		{
-			throw std::exception("Nie istnieje taki rodzaj leku");
-		}
+        if (!plik.good())
+            throw "Nie istnieje taki rodzaj leku";
 		while (!plik.eof())
 		{
 			string napis;
@@ -32,83 +29,54 @@ Lek* Magazyn::znajdzlek(string nazwaleku, string nazwarodzaju) //parametr metody
 				ss >> nazwazpliku >> refundacja >> cena >> ograniczenia >> iloscsztuk >> numerserii;
 				if (nazwazpliku == nazwaleku)
 				{
-					return new Lek(nazwaleku, cena, refundacja, ograniczenia, numerserii, iloscsztuk);
-					plik.close();
+                    plik.close();
+                    return new Lek(nazwaleku, cena, refundacja, ograniczenia, numerserii, iloscsztuk);
 				}
-			}
-			else
-			{
-				plik.close();
-			}
-		}
-
-		return nullptr;
+            }
+            else
+                plik.close();
+        }
 	}
 	// złapanie wyjątku w przypadku niepowodzenia dostępu do pliku
 	catch (const std::exception &e )
 	{
-		std::cout <<std::endl << e.what() << std::endl;
-		plik.close();
-		return nullptr;
+        plik.close();
+        QMessageBox::critical(nullptr, "BazyDancyh", e.what());
 	}
+    return nullptr;
 }
 
 Listalekow * Magazyn::znajdzLeki()
 {
 	return zarzadzanieLekami.znajdzLekarstwa();
 }
- 
 
-
-
-
-void Magazyn::dodajlek2(string nazwaleku, string nazwarodzaju)
+void Magazyn::dodajlek(string nazwaleku, string nazwarodzaju)
 {
 	Lek *lek = znajdzlek(nazwaleku, nazwarodzaju);
 
 	if (lek != nullptr)
 	{
-		delete lek;
-		cout << " Istnieje juz taki lek";
-
+        delete lek;
+        QMessageBox::warning(nullptr, "BazyDanych", "Istnieje juz taki lek");
 	}
 	else
 	{
-		bool refundacja;
-		string refundacjaString;
-		double cena;
-		int ograniczenia;
-		int iloscsztuk;
-		string numerserii;
+        bool refundacja;
 		// sprawdznie fragmentu kodu podejrzanego o wyjątek 
 		ofstream plik;
 		ofstream zamienniki;
 		// jeżeli otwarcie pliku by się nie powiodło rzucany jest wyjątek który łapie instrukcja catch
 		// jeżeli do jakiegoś obiektu nie można było by się odwołać to rzucany jest wyjątek exception
 
-
-		cout << "podaj cene : ";
-		cin >> cena;
-		cout << "podaj ograniczenia : ";
-		cin >> ograniczenia;
-		cout << "podaj ilosc sztuk : ";
-		cin >> iloscsztuk;
-		cout << "czy refundacja jest (tak/nie): ";
-		getline(cin, refundacjaString);
-		getline(cin, refundacjaString);//enter od razu wczytuje linie po cin i powoduje ze trzeba 2 razy sczytac
-		cout << "podaj numer serii: ";
-		getline(cin, numerserii);
-		
-		
-		if (refundacjaString.compare("tak") == 0)
-		{
-			refundacja = true;
-		}
-		else
-			if (refundacjaString.compare("nie") == 0)
-			{
-				refundacja = false;
-			}
+        double cena = QInputDialog::getDouble(nullptr, "BazyDanych", "Podaj cene");
+        int ograniczenia = QInputDialog::getInt(nullptr, "BazyDanych", "Podaj ograniczenia");
+        int iloscsztuk = QInputDialog::getInt(nullptr, "BazyDanych", "Podaj ilosc");
+        string numerserii = QInputDialog::getText(nullptr, "BazyDanych", "Podaj numer serii").toStdString();
+        if (QInputDialog::getText(nullptr, "BazyDanych", "Czy jest refundacja? (tak/nie)").toStdString().compare("tak") == 0)
+            refundacja = true;
+        else
+            refundacja = false;
 
 		try
 		{
@@ -119,63 +87,44 @@ void Magazyn::dodajlek2(string nazwaleku, string nazwarodzaju)
 		}
 		catch (const exception &e)
 		{
-			cout << "cos poszlo nie tak przy otwieraniu pliku!" << endl;
+            QMessageBox::critical(nullptr, "BazyDancyh", (string("cos poszlo nie tak przy otwieraniu pliku!\n") + e.what()).c_str());
 		}
-		try {
+        try
+        {
 			zamienniki.open("zamienniki.txt", ios::out | ios::app);
-			string choroba;
-			zamienniki << nazwaleku + " ";
-			cout << "Wpisz choroby dla ktorych twoj lek jest zamiennikiem jezeli chcesz przestac wpisz 0";
+            string choroba = "";
+            zamienniki << nazwaleku + " ";
 			while (choroba != "0") {
 				if (choroba == "0") {
 					zamienniki << '\n';
 				}
-				cin >> choroba;
+                choroba = QInputDialog::getText(nullptr, "BazyDanych",
+                                                "Wpisz choroby dla ktorych twoj lek jest zamiennikiem jezeli chcesz przestac wpisz 0").toStdString();
 				zamienniki << choroba + " ";
 			}
 			zamienniki << "\n";
-
 			zamienniki.close();
 		}
 		// złpanie wyjątku
 		catch (const exception &e)
 		{
-			cout << "cos poszlo nie tak przy otwieraniu pliku!" << " zamienniki.txt" << endl;
-			zamienniki.close();
-		}
-
-
-
-		
-		
+            zamienniki.close();
+            QMessageBox::critical(nullptr, "BazyDancyh", (string("cos poszlo nie tak przy otwieraniu pliku zamienniki.txt!\n") + e.what()).c_str());
+		}		
 	}
-
  }
-
-
-void Magazyn::dodajlek()
-{
-	cout << "Wpisz rodzaj \n";
-	string nazwaleku;
-	string nazwarodzaju;
-	cin >> nazwarodzaju;
-	cout << "Wpisz nazwe leku\n";
-	cin >> nazwaleku;
-	dodajlek2(nazwaleku, nazwarodzaju);
-	
-}
 
 void Magazyn::znajdzzamiennik(string choroba)
 {
 	fstream plik;
-	try {
+    try
+    {
 		plik.open("zamienniki.txt", std::ios::in);
 
 		while (!plik.eof())
 		{
 			string napis;
-			string nazwazpliku;
-			int iloscsztuk;
+            string nazwazpliku;
 			getline(plik, napis, '\n');
 			char * schowek;
 			char* skonwertowany = new char[napis.length() + 1];
@@ -183,11 +132,12 @@ void Magazyn::znajdzzamiennik(string choroba)
 			schowek = strtok(skonwertowany, " ");
 			if (napis.compare("") != 0)
 			{
-			nazwazpliku = schowek;
-				while (schowek != NULL) {
-					if (schowek == choroba) {
-						cout << "lekiem dzialajacym na te chorobe jest: " + nazwazpliku << endl;
-					}
+                nazwazpliku = schowek;
+                while (schowek != NULL)
+                {
+                    if (schowek == choroba)
+                        QMessageBox::information(nullptr, "BazyDancyh",
+                                                 (string("lekiem dzialajacym na te chorobe jest:") + nazwazpliku).c_str());
 					schowek = strtok(NULL, " ");
 				}
 			}
@@ -195,9 +145,9 @@ void Magazyn::znajdzzamiennik(string choroba)
 		plik.close();
 	}
 	catch (std::exception &e)
-	{
-		std::cout << "Dostep do pliku zostal zabroniony!" << std::endl;
-		plik.close();
+    {
+        plik.close();
+        QMessageBox::critical(nullptr, "BazyDancyh", (string("Dostep do pliku zostal zabroniony!\n") + e.what()).c_str());
 	}
 }
 
@@ -207,12 +157,12 @@ void Magazyn::usunlekzzamiennikow(string nazwaleku)
 	// sprawdzenie kodu podejrzanego o wyjątek
 	try
 	{
-	plik.open("zamienniki.txt", std::ios::in);
-
+        plik.open("zamienniki.txt", std::ios::in);
 		string linia;
 		string nazwalekuzpliku;
 		vector<string> liniezpliku;
-		while (getline(plik, linia)) {
+        while (getline(plik, linia))
+        {
 			char * schowek;
 			char* skonwertowany = new char[linia.length() + 1];
 			strcpy(skonwertowany, linia.c_str());
@@ -221,42 +171,35 @@ void Magazyn::usunlekzzamiennikow(string nazwaleku)
 			if (linia.compare("") != 0)
 			{
 				nazwalekuzpliku = schowek;
-				if (nazwaleku != nazwalekuzpliku) {
-					liniezpliku.push_back(linia);
-
-
-				}
+                if (nazwaleku != nazwalekuzpliku)
+                    liniezpliku.push_back(linia);
 			}
-			delete skonwertowany;
+            delete[] skonwertowany;
 		}
 		plik.close();
 		plik.open("zamienniki.txt", std::ofstream::out | std::ofstream::trunc);
 		if (plik.good()) 
 		{
 			std::vector<string>::iterator cell = liniezpliku.begin();
-			for (cell; cell!= liniezpliku.end(); cell++) {
-				plik << *cell;
-			}
+            for (; cell!= liniezpliku.end(); cell++)
+                plik << *cell;
 		}
 		plik.close();
 	}
 	// złapanie wyjątku 
 	catch (std::exception &e)
-	{
-		std::cout << "Dostep do pliku zostal zabroniony!" << std::endl;
-		plik.close();
+    {
+        plik.close();
+        QMessageBox::critical(nullptr, "BazyDancyh", (string("Dostep do pliku zostal zabroniony!\n") + e.what()).c_str());
 	}
-
-
 }
 
 void Magazyn::zmniejszilosclekowojeden(string nazwaleku, string nazwarodzaju)
 {
-
 	fstream plik;
 	try
 	{
-	plik.open(nazwarodzaju + ".txt", std::ios::in);
+        plik.open(nazwarodzaju + ".txt", std::ios::in);
 		bool znaleziono = false;
 		string linia;
 		string nazwalekuzpliku;
@@ -267,12 +210,14 @@ void Magazyn::zmniejszilosclekowojeden(string nazwaleku, string nazwarodzaju)
 		int iloscsztuk;
 		Listalekow* lista = NULL;
 
-		while (getline(plik, linia)) {
+        while (getline(plik, linia))
+        {
 			char * schowek;
 			char* skonwertowany = new char[linia.length() + 1];
 			strcpy(skonwertowany, linia.c_str());
 			schowek = strtok(skonwertowany, " ");
-			if (schowek != NULL) {
+            if (schowek != NULL)
+            {
 				nazwalekuzpliku = schowek;
 				schowek = strtok(NULL, " ");
 				refundacja = schowek;
@@ -287,35 +232,32 @@ void Magazyn::zmniejszilosclekowojeden(string nazwaleku, string nazwarodzaju)
 
 				if (nazwaleku.compare( nazwalekuzpliku)==0) {
 					znaleziono = true;
-					if (iloscsztuk <= 0) {
-						cout << "za malo leku: " + nazwaleku + " w bazie aby sprzedac, skontaktuj sie z managerem" << endl;
+                    if (iloscsztuk <= 0)
+                        QMessageBox::warning(nullptr, "BazyDancyh", (string("za malo leku: ") + nazwaleku +
+                                                                     string(" w bazie aby sprzedac, skontaktuj sie z managerem")).c_str());
+                    else
+                    {
+                        iloscsztuk--;
+                        QMessageBox::information(nullptr, "BazyDancyh", (string("sprzedano lek: ") + nazwaleku + string(" pozostalo jeszcze: ") +
+                                                                         to_string(iloscsztuk) + string(" w bazie")).c_str());
 					}
-					else {
-						iloscsztuk--;
-						cout << "sprzedano lek: " + nazwaleku + " pozostalo jeszcze: " + to_string(iloscsztuk) + " w bazie" << endl;
-					}
-
 				}
 				Lek* lek = new Lek(nazwalekuzpliku, refundacja, cena, ograniczenia,numerserii, iloscsztuk);
 				lista->dodajlekdolisty(lek, lista);
-
-
 			}
 
-			delete skonwertowany;
+            delete[] skonwertowany;
 		}
-		if (znaleziono == false) {
-			cout << "Nie znaleziono podanego leku w bazie sprobuj ponownie dla innego rodzaju " << endl;
-		}
+        if (znaleziono == false)
+            QMessageBox::warning(nullptr, "BazyDancyh", "Nie znaleziono podanego leku w bazie sprobuj ponownie dla innego rodzaju");
 		plik.close();
 		wypiszlistedopliku(nazwarodzaju, lista);
 	}
 	catch (std::exception &e)
-	{
-		cout << "Dostep do bazy zabroniony" << endl;
+    {
 		plik.close();
-	}
-	
+        QMessageBox::critical(nullptr, "BazyDancyh", (string("Dostep do bazy zabroniony\n") + e.what()).c_str());
+    }
 }
 
 void Magazyn::uzupelnijlek(string nazwaleku, string nazwarodzaju, int nowailosc)
@@ -334,12 +276,14 @@ void Magazyn::uzupelnijlek(string nazwaleku, string nazwarodzaju, int nowailosc)
 		string numerserii;
 		Listalekow* lista = NULL;
 
-		while (getline(plik, linia)) {
+        while (getline(plik, linia))
+        {
 			char * schowek;
 			char* skonwertowany = new char[linia.length() + 1];
 			strcpy(skonwertowany, linia.c_str());
 			schowek = strtok(skonwertowany, " ");
-			if (schowek != NULL) {
+            if (schowek != NULL)
+            {
 				nazwalekuzpliku = schowek;
 				schowek = strtok(NULL, " ");
 				refundacja = schowek;
@@ -352,24 +296,21 @@ void Magazyn::uzupelnijlek(string nazwaleku, string nazwarodzaju, int nowailosc)
 				schowek = strtok(NULL, " ");
 				numerserii = schowek;
 
-				if (nazwaleku.compare(nazwalekuzpliku)==0) {
-					iloscsztuk = nowailosc;
-				}
+                if (nazwaleku.compare(nazwalekuzpliku) == 0)
+                    iloscsztuk = nowailosc;
 				Lek* lek = new Lek(nazwalekuzpliku, refundacja, cena, ograniczenia, numerserii, iloscsztuk);
 				lista->dodajlekdolisty(lek, lista);
 			}
-
-			delete skonwertowany;
+            delete[] skonwertowany;
 		}
 		plik.close();
 		wypiszlistedopliku(nazwarodzaju, lista);
 	}
 	catch (exception & e)
 	{
-		plik.close();
-		cout << "cos poszlo nie tak przy otwieraniu pliku!" << endl;
+        plik.close();
+        QMessageBox::critical(nullptr, "BazyDancyh", (string("cos poszlo nie tak przy otwieraniu pliku!\n") + e.what()).c_str());
 	}
-
 }
 
 void Magazyn::wypiszlistedopliku(string nazwarodzaju, Listalekow* lista) //metoda ktora sobie bierze listelekow a lista lekow to obiekt co nie?
@@ -383,7 +324,8 @@ void Magazyn::wypiszlistedopliku(string nazwarodzaju, Listalekow* lista) //metod
 		while (przechowywatorglowy)
 		{
 			plik << przechowywatorglowy->lek->getNazwaleku() << " " << przechowywatorglowy->lek->getRefundacja() <<
-				" " << przechowywatorglowy->lek->getCena() << " " << przechowywatorglowy->lek->getOgraniczenia() << " " << przechowywatorglowy->lek->getIloscsztuk() <<" "<< przechowywatorglowy->lek->getNumerserii() << '\n';
+                " " << przechowywatorglowy->lek->getCena() << " " << przechowywatorglowy->lek->getOgraniczenia() <<
+                " " << przechowywatorglowy->lek->getIloscsztuk() <<" "<< przechowywatorglowy->lek->getNumerserii() << '\n';
 
 			przechowywatorglowy = przechowywatorglowy->pNext;
 		}
@@ -393,9 +335,8 @@ void Magazyn::wypiszlistedopliku(string nazwarodzaju, Listalekow* lista) //metod
 	}
 	// złapanie wyjątku
 	catch (const exception &e)
-	{
-		cout << "Dostep do bazy zabroniony" << endl;
+    {
 		plik.close();
+        QMessageBox::critical(nullptr, "BazyDancyh", (string("Dostep do bazy zabroniony\n") + e.what()).c_str());
 	}
 }
-
