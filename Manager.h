@@ -1,13 +1,10 @@
 #pragma once
 #include "Sprzedawca.h"
-class Manager : public Sprzedawca {
 
-
+class Manager : public Sprzedawca
+{
 public:
-	Manager();
-	void menu();
-	void dodajLek();
-	void usunLek();
-	void uzupelnijLek();
-
+    static void dodajLek(const string& name, const string& type);
+    static void usunLek(const string& name, const string& type);
+    static void uzupelnijLek(const string& name, const string& type, int count);
 };
