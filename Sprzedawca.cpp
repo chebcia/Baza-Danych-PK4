@@ -1,9 +1,5 @@
 #include "Sprzedawca.h"
-
-Sprzedawca::Sprzedawca()
-{
-	this->rola = "sprzedawca";
-}
+#include <QMessageBox>
 
 void Sprzedawca::znajdzlekarstwa()
 {
@@ -13,100 +9,43 @@ void Sprzedawca::znajdzlekarstwa()
 	{
 		Listalekow * nowyPhead = znalezioneLekarstwa;
 		while (nowyPhead!= NULL)
-		{
-
-			Lek *znalezionylek = nowyPhead->lek;
-			cout << "Nazwa leku to: " << znalezionylek->getNazwaleku() << endl;
-			cout << "Ograniczenia znalezionego leku to: " << znalezionylek->getOgraniczenia() << "lat" << endl;
-			cout << "Cena znalezionego leku to: " << znalezionylek->getCena() << "PLN" << endl;
-			cout << "Refundacja leku: " << znalezionylek->getRefundacja()  << endl;
-			cout << "Ilosc sztuk znalezionego leku to: " << znalezionylek->getIloscsztuk() << endl;
-			cout << "Numer serii znalezionego leku to: " << znalezionylek->getNumerserii() << endl<<endl;
+        {
+            Lek *znalezionylek = nowyPhead->lek;
+            QMessageBox::information(nullptr, "BazyDanych", (string("Nazwa: ") + znalezionylek->getNazwaleku() +
+                                     string("\nOgraniczenia: ") + to_string(znalezionylek->getOgraniczenia()) +
+                                     string("\nCena: ") + to_string(znalezionylek->getCena()) +
+                                     string("PLN\nRefundacja: ") + string(znalezionylek->getRefundacja() ? "Tak" : "Nie") +
+                                     string("\nIlosc: ") + to_string(znalezionylek->getIloscsztuk()) +
+                                     string("\nSeria: ") + znalezionylek->getNumerserii()).c_str());
 			nowyPhead = nowyPhead->pNext;
 		}
-
 	}
-	else
-	{
-		cout << "Nie znaleziono lekarstw" << endl;
-	}
-
+    else
+        QMessageBox::warning(nullptr, "BazyDanych", "Nie znaleziono lekarstw");
 }
 
-void Sprzedawca::znajdzlek()
+void Sprzedawca::znajdzlek(const string& name, const string& type)
 {
-	Lek lek = podajNazweIRodzaj();
 	Magazyn magazyn = Magazyn();
-	Lek * znalezionylek = magazyn.znajdzlek(lek.getNazwaleku(), lek.getRodzajleku());
+    Lek * znalezionylek = magazyn.znajdzlek(name, type);
 	if (znalezionylek != nullptr)
 	{
-		cout << "Ograniczenia znalezionego leku to: " << znalezionylek->getOgraniczenia() << "lat" << endl;
-		cout << "Cena znalezionego leku to: " << znalezionylek->getCena() << "PLN"  << endl;
-		cout << "Refundacja leku: " << znalezionylek->getRefundacja() << endl;
-		cout << "Ilosc sztuk znalezionego leku to: " << znalezionylek->getIloscsztuk() << endl;
-		cout << "Numer serii znalezionego leku to: " << znalezionylek->getNumerserii() << endl;
-	
-	}
-	else
-	{
-
-	}
-
+        QMessageBox::information(nullptr, "BazyDanych", (string("Ograniczenia: ") + to_string(znalezionylek->getOgraniczenia()) +
+                                 string("\nCena: ") + to_string(znalezionylek->getCena()) +
+                                 string("PLN\nRefundacja: ") + string(znalezionylek->getRefundacja() ? "Tak" : "Nie") +
+                                 string("\nIlosc: ") + to_string(znalezionylek->getIloscsztuk()) +
+                                 string("\nSeria: ") + znalezionylek->getNumerserii()).c_str());
+    }
 }
 
-void Sprzedawca::menu()
+void Sprzedawca::sprzedajLek(const string& name, const string& type)
 {
-
-	int opcja = 1;
-	while (opcja != 0)
-	{
-		cout << "1.Sprzedaj lek" << endl;
-		cout << "2.Znajdz zamiennik" << endl;
-		cout << "3.Znajdz lek" << endl;
-		cout << "4.Znajdz lekarstwa" << endl;
-		cout << "0.Wyjdz" << endl;
-
-		cin >> opcja;
-
-		switch (opcja)
-		{
-		case 1:
-			sprzedajLek();
-			break;
-		case 2:
-			znajdzZamiennik();
-			break;
-		case 3:
-			znajdzlek();
-			break;
-		case 4:
-			znajdzlekarstwa();
-			break;
-		case 0:
-			exit(0);
-			break;
-		default:
-			cout << "Bledna opcja";
-		}
-	}
-}
-
-void Sprzedawca::sprzedajLek()
-{
-	Lek lek = podajNazweIRodzaj();
 	Magazyn magazyn = Magazyn();
-
-	magazyn.zmniejszilosclekowojeden(lek.getNazwaleku(), lek.getRodzajleku());
-
-
+    magazyn.zmniejszilosclekowojeden(name, type);
 }
 
-void Sprzedawca::znajdzZamiennik()
+void Sprzedawca::znajdzZamiennik(const string& sickness)
 {
-	Lek lek = Lek();
-	Magazyn magazyn = Magazyn();
-	string choroba;
-	cout << "Podaj chorobe dla ktorej szukasz lekow " << endl;
-	cin >> choroba;
-	magazyn.znajdzzamiennik(choroba);
+    Magazyn magazyn = Magazyn();
+    magazyn.znajdzzamiennik(sickness);
 }
