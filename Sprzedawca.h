@@ -1,14 +1,11 @@
 #pragma once
 #include "Pracownik.h"
-class Sprzedawca : public Pracownik {
 
+class Sprzedawca : public Pracownik
+{
 public:
-	Sprzedawca();
-	void znajdzlekarstwa();
-	void menu();
-protected:
-	void sprzedajLek();
-	void znajdzZamiennik();
-	void znajdzlek();
-
+    static void znajdzlekarstwa();
+    static void znajdzlek(const string& name, const string& type);
+    static void sprzedajLek(const string& name, const string& type);
+    static void znajdzZamiennik(const string& sickness);
 };
