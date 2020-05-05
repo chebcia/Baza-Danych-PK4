@@ -1,9 +1,8 @@
 #include "ZarzadzanieLekami.h"
-
 #include <thread>
 #include <string>
-#include <iostream>
-
+#include <QMessageBox>
+#include <QInputDialog>
 
 void szukajPoKategorii(Lek lekarstwo, string nazwarodzaju, Listalekow*& listalekow,bool czySzukacPoRefundacji)
 {
@@ -12,10 +11,8 @@ void szukajPoKategorii(Lek lekarstwo, string nazwarodzaju, Listalekow*& listalek
 	try
 	{
 		plik.open(nazwarodzaju + ".txt", std::ios::in);
-		if (!plik.good())
-		{
-			throw std::exception("Nie istnieje taki rodzaj leku");
-		}
+        if (!plik.good())
+            throw "Nie istnieje taki rodzaj leku";
 		while (!plik.eof())
 		{
 			string napis;
@@ -75,109 +72,65 @@ void szukajPoKategorii(Lek lekarstwo, string nazwarodzaju, Listalekow*& listalek
 	}
 	// złapanie wyjątku w przypadku niepowodzenia dostępu do pliku
 	catch (const std::exception &e)
-	{
-		std::cout << std::endl << e.what() << std::endl;
+    {
 		plik.close();
+        QMessageBox::critical(nullptr, "BazyDancyh", e.what());
 	}
 }
 
-
-
-
 Listalekow * ZarzadzanieLekami::znajdzLekarstwa(Lek lekarstwo,bool czySzukacPoRefundacji)
 {
-	string nazwaKategorii;
-	cout << "podaj kategorie leku (nic by nie korzystac z pola): ";
-	getline(cin, nazwaKategorii);
+    string nazwaKategorii = QInputDialog::getText(nullptr, "BazyDanych", "podaj kategorie leku (nic by nie korzystac z pola)").toStdString();
 	vector<string> listaKategorii;
 	Listalekow* listaZnalezionychLekow = NULL;
 
-	if (nazwaKategorii.compare("") != 0)
-	{
-		listaKategorii.push_back(nazwaKategorii);
-	}
+    if (nazwaKategorii.compare("") != 0)
+        listaKategorii.push_back(nazwaKategorii);
 	else
-
 	{
 		fstream plik;
 		// sprawdzenie fragmentu instrukcją try
 		try
 		{
 			plik.open("Kategorie.txt", std::ios::in);
-			if (!plik.good())
-			{
-				throw std::exception("Nie ");
-			}
+            if (!plik.good())
+                throw "Nie";
 			while (!plik.eof())
 			{
 				string napis;
-
-
 				getline(plik, napis);
 				listaKategorii.push_back(napis);
-
 			}
 		}
 		catch (const std::exception &e)
-		{
-			std::cout << std::endl << e.what() << std::endl;
+        {
 			plik.close();
+            QMessageBox::critical(nullptr, "BazyDancyh", e.what());
 		}
 	}
-
-
-
 	std::vector<std::thread> watki(listaKategorii.size());
-	for (int a = 0; a < listaKategorii.size(); a++)
+    for (size_t a = 0; a < listaKategorii.size(); a++)
 	{
 		string tmp = listaKategorii[a];
 		watki[a] = std::thread(szukajPoKategorii, lekarstwo, tmp, std::ref(listaZnalezionychLekow),czySzukacPoRefundacji);
 	}
-	for (int a = 0; a < listaKategorii.size(); ++a)
-	{
-		watki[a].join();
-	}
+    for (size_t a = 0; a < listaKategorii.size(); ++a)
+        watki[a].join();
 	return listaZnalezionychLekow;
 }
 
 Listalekow * ZarzadzanieLekami::znajdzLekarstwa()
 {
-	string nazwaleku;
-	string refundacjaString;
-	double cena;
-	int ograniczenia;
-	int iloscsztuk;
-	string numerserii;
-	string rodzajLeku;
-	cout << "podaj nazwe leku (nic by nie korzystac z pola): ";
-	getline(cin, nazwaleku);
-	getline(cin, nazwaleku);
-	cout << "podaj cene (-1 by nie korzystac z pola): ";
-	cin >> cena;
-	cout << "podaj ograniczenia (-1 by nie korzystac z pola): ";
-	cin >> ograniczenia;
-	cout << "podaj ilosc sztuk (-1 by nie korzystac z pola): ";
-	cin >> iloscsztuk;
-	cout << "czy refundacja jest (nic/tak/nie): ";
-	getline(cin, refundacjaString);
-	getline(cin, refundacjaString);//enter od razu wczytuje linie po cin i powoduje ze trzeba 2 razy sczytac
-	cout << "podaj numer serii (nic by nie korzystac z pola): ";
-	getline(cin, (numerserii));
-	if (refundacjaString.compare("tak") == 0)
-	{
-		return ZarzadzanieLekami::znajdzLekarstwa(Lek(nazwaleku, true, cena, ograniczenia, numerserii, iloscsztuk),true);
-	}
-	else
-		if (refundacjaString.compare("nie") == 0)
-		{
-			return ZarzadzanieLekami::znajdzLekarstwa(Lek(nazwaleku, false, cena, ograniczenia, numerserii, iloscsztuk),true);
-		}
-		else
-		{
-			return ZarzadzanieLekami::znajdzLekarstwa(Lek(nazwaleku,false, cena, ograniczenia, numerserii, iloscsztuk),false);
-		}
-
-
+    string nazwaleku = QInputDialog::getText(nullptr, "BazyDanych", "podaj nazwe leku (nic by nie korzystac z pola)").toStdString();
+    double cena = QInputDialog::getDouble(nullptr, "BazyDanych", "podaj cene (-1 by nie korzystac z pola)");
+    int ograniczenia = QInputDialog::getInt(nullptr, "BazyDanych", "podaj ograniczenia (-1 by nie korzystac z pola)");
+    int iloscsztuk = QInputDialog::getInt(nullptr, "BazyDanych", "podaj ilosc sztuk (-1 by nie korzystac z pola)");
+    string refundacjaString = QInputDialog::getText(nullptr, "BazyDanych", "czy refundacja jest (nic/tak/nie)").toStdString();
+    string numerserii = QInputDialog::getText(nullptr, "BazyDanych", "podaj numer serii (nic by nie korzystac z pola)").toStdString();
+    if (refundacjaString.compare("tak") == 0)
+        return ZarzadzanieLekami::znajdzLekarstwa(Lek(nazwaleku, true, cena, ograniczenia, numerserii, iloscsztuk),true);
+    else if (refundacjaString.compare("nie") == 0)
+        return ZarzadzanieLekami::znajdzLekarstwa(Lek(nazwaleku, false, cena, ograniczenia, numerserii, iloscsztuk),true);
+    else
+        return ZarzadzanieLekami::znajdzLekarstwa(Lek(nazwaleku,false, cena, ograniczenia, numerserii, iloscsztuk),false);
 }
-
-
